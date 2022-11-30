@@ -1,5 +1,6 @@
 import sys
 import cv2
+import numpy as np
 from PySide6.QtGui import QAction, QImage, QPixmap
 from PySide6.QtWidgets import (
     QApplication, QWidget, QLabel, QMainWindow, 
@@ -29,7 +30,10 @@ class MainWindow(QMainWindow):
         button4 = QPushButton("색상반전")
         button5 = QPushButton("blur")        
         button6 = QPushButton("GaussianBlur")        
-        button7 = QPushButton("medianBlur")      
+        button7 = QPushButton("medianBlur")
+        button8 = QPushButton("90도 회전")
+        button9 = QPushButton("180도 회전") 
+        button10 = QPushButton("270도 회전") 
         buttonexit = QPushButton("새로고침")
 
         button1.clicked.connect(self.show_file_dialog)
@@ -39,6 +43,9 @@ class MainWindow(QMainWindow):
         button5.clicked.connect(self.blur_image)
         button6.clicked.connect(self.GaussianBlur_image)
         button7.clicked.connect(self.medianBlur_image)
+        button8.clicked.connect(self.rotate_90_image)
+        button9.clicked.connect(self.rotate_180_image)
+        button10.clicked.connect(self.rotate_270_image)
 
         sidebar.addWidget(button1)
         sidebar.addWidget(button2)
@@ -47,6 +54,10 @@ class MainWindow(QMainWindow):
         sidebar.addWidget(button5)
         sidebar.addWidget(button6)
         sidebar.addWidget(button7)
+        sidebar.addWidget(button8)
+        sidebar.addWidget(button9)
+        sidebar.addWidget(button10)
+        
         sidebar.addWidget(buttonexit)
 
         main_layout.addLayout(sidebar)
@@ -132,7 +143,38 @@ class MainWindow(QMainWindow):
             image.data, w, h, bytes_per_line, QImage.Format_RGB888
         ).rgbSwapped()
         pixmap = QPixmap(image)
-        self.label2.setPixmap(pixmap)                      
+        self.label2.setPixmap(pixmap)
+
+    def rotate_90_image(self):
+        image = cv2.rotate(self.image, cv2.ROTATE_90_CLOCKWISE)
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap)
+
+    def rotate_180_image(self):
+        image = cv2.rotate(self.image, cv2.ROTATE_180)
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap)
+
+    def rotate_270_image(self):
+        image = cv2.rotate(self.image, cv2.ROTATE_90_COUNTERCLOCKWISE)
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap)        
+
 
     def clear_label(self):
         self.label2.clear()
