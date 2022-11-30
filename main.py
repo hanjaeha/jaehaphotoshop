@@ -27,16 +27,26 @@ class MainWindow(QMainWindow):
         button2 = QPushButton("좌우반전")
         button3 = QPushButton("상하반전")
         button4 = QPushButton("색상반전")
+        button5 = QPushButton("blur")        
+        button6 = QPushButton("GaussianBlur")        
+        button7 = QPushButton("medianBlur")      
         buttonexit = QPushButton("새로고침")
+
         button1.clicked.connect(self.show_file_dialog)
         button2.clicked.connect(self.flip_image)
         button3.clicked.connect(self.flip2_image)
         button4.clicked.connect(self.reverse_image)
-        buttonexit.clicked.connect(self.clear_label)
+        button5.clicked.connect(self.blur_image)
+        button6.clicked.connect(self.GaussianBlur_image)
+        button7.clicked.connect(self.medianBlur_image)
+
         sidebar.addWidget(button1)
         sidebar.addWidget(button2)
         sidebar.addWidget(button3)
         sidebar.addWidget(button4)
+        sidebar.addWidget(button5)
+        sidebar.addWidget(button6)
+        sidebar.addWidget(button7)
         sidebar.addWidget(buttonexit)
 
         main_layout.addLayout(sidebar)
@@ -93,6 +103,36 @@ class MainWindow(QMainWindow):
         ).rgbSwapped()
         pixmap = QPixmap(image)
         self.label2.setPixmap(pixmap)
+
+    def blur_image(self):
+        image = cv2.blur(self.image, (5,5))
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap)
+
+    def GaussianBlur_image(self):
+        image = cv2.GaussianBlur(self.image, (5,5), sigmaX=0)
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap)
+
+    def medianBlur_image(self):
+        image = cv2.medianBlur(self.image, ksize=5)
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap)                      
 
     def clear_label(self):
         self.label2.clear()
