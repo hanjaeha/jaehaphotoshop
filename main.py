@@ -34,6 +34,10 @@ class MainWindow(QMainWindow):
         button8 = QPushButton("90도 회전")
         button9 = QPushButton("180도 회전") 
         button10 = QPushButton("270도 회전") 
+        button11 = QPushButton("bilateralFilter")
+        button12 = QPushButton("sobel")
+
+
         buttonexit = QPushButton("새로고침")
 
         button1.clicked.connect(self.show_file_dialog)
@@ -46,6 +50,8 @@ class MainWindow(QMainWindow):
         button8.clicked.connect(self.rotate_90_image)
         button9.clicked.connect(self.rotate_180_image)
         button10.clicked.connect(self.rotate_270_image)
+        button11.clicked.connect(self.bilateralFilter_image)
+        button12.clicked.connect(self.sobel_image)
 
         sidebar.addWidget(button1)
         sidebar.addWidget(button2)
@@ -57,6 +63,8 @@ class MainWindow(QMainWindow):
         sidebar.addWidget(button8)
         sidebar.addWidget(button9)
         sidebar.addWidget(button10)
+        sidebar.addWidget(button11)   
+        sidebar.addWidget(button12)      
         
         sidebar.addWidget(buttonexit)
 
@@ -173,8 +181,27 @@ class MainWindow(QMainWindow):
             image.data, w, h, bytes_per_line, QImage.Format_RGB888
         ).rgbSwapped()
         pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap)
+
+    def bilateralFilter_image(self):
+        image = cv2.bilateralFilter(self.image, 5, 75, 75)
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
         self.label2.setPixmap(pixmap)        
 
+    def sobel_image(self):
+        image = cv2.Sobel(self.image, -1, 1, 0, ksize=3)
+        h, w, _ = image.shape
+        bytes_per_line = 3 * w
+        image = QImage(
+            image.data, w, h, bytes_per_line, QImage.Format_RGB888
+        ).rgbSwapped()
+        pixmap = QPixmap(image)
+        self.label2.setPixmap(pixmap) 
 
     def clear_label(self):
         self.label2.clear()
